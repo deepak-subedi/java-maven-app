@@ -1,4 +1,5 @@
 #!/usr/bin/env groovy
+def gv 
 
 pipeline {
     agent any
@@ -9,15 +10,22 @@ pipeline {
 
     environment {
         IMAGE_NAME = "deepaksubedi311/demo-app"
-        IMAGE_VERSION = "1.2.0"
+        IMAGE_VERSION = "1.3.0"
     }
 
     stages {
+        stage("init") {
+            steps {
+                script {
+                    gv = load "scripts.groovy"
+                }
+            }
+        }
+
         stage("build Jar") {
             steps {
                 script {
-                    echo "Building the application..."
-                    sh "mvn package"
+                    gv.buildJar()
                 }
             }
         }
@@ -25,12 +33,7 @@ pipeline {
         stage("build image") {
             steps {
                 script {
-                    echo "Building the docker image..."
-                    withCredentials([usernamePassword(credentialsId: "docker-hub-credentials", usernameVariable: "USERNAME", passwordVariable: "PASSWORD")]) {
-                        sh "docker build -t $IMAGE_NAME:$IMAGE_VERSION ."
-                        sh "echo $PASSWORD | docker login -u $USERNAME --password-stdin"
-                        sh "docker push $IMAGE_NAME:$IMAGE_VERSION"
-                    }
+                    gv.buildImage()
                 }
             }
         }
@@ -38,7 +41,7 @@ pipeline {
         stage('deploy') {
             steps {
                 script {
-                    echo "Deploying the application..."
+                    gv.deployApp()
                 }
             }
         }
