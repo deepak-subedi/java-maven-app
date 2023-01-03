@@ -7,7 +7,7 @@ pipeline {
         maven "maven-3.8"
     }
 
-    environments {
+    environment {
         IMAGE_NAME = "deepaksubedi311/demo-app"
         IAMGE_VERSION = "1.2.0"
     }
