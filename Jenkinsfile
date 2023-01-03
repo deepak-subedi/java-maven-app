@@ -9,7 +9,7 @@ pipeline {
 
     environment {
         IMAGE_NAME = "deepaksubedi311/demo-app"
-        IAMGE_VERSION = "1.2.0"
+        IMAGE_VERSION = "1.2.0"
     }
 
     stages {
