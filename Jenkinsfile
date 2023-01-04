@@ -9,7 +9,6 @@ pipeline {
 
     environment {
         IMAGE_NAME = "deepaksubedi311/demo-app"
-        IMAGE_VERSION = "1.3.0"
     }
 
     stages {
@@ -17,6 +16,14 @@ pipeline {
             steps {
                 script {
                     gv = load "scripts.groovy"
+                }
+            }
+        }
+
+        stage("increase version") {
+            steps {
+                script {
+                    gv.incrementVersion()
                 }
             }
         }
