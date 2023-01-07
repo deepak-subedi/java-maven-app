@@ -30,6 +30,7 @@ def commitChanges() {
 
         sh "git status"
         sh "git branch"
+        sh "git config --global http.proxy http://proxyuser:proxypwd@proxy.server.com:8080"
         sh "git config --list"
 
         sh "git remote set-url origin https://${USERNAME}:${PASSWORD}@github.com/deepak-subedi/java-maven-app.git"
