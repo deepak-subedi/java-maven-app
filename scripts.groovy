@@ -25,9 +25,6 @@ def buildImage() {
 def commitChanges() {
     echo "Update Pom.xml file to git repository..."
     withCredentials([usernamePassword(credentialsId: "github-credentials", usernameVariable: "USERNAME", passwordVariable: "PASSWORD")]) {
-        sh "git config --global --unset http.proxy"
-        sh "git config --global --unset https.proxy"
-        
         sh 'git config --global user.email "jenkins@gmail.com"'
         sh 'git config --global user.name "jenkins"'
 
@@ -38,7 +35,7 @@ def commitChanges() {
         sh "git remote set-url origin https://${USERNAME}:${PASSWORD}@github.com/deepak-subedi/java-maven-app.git"
         sh "git add ."
         sh 'git commit -m "ci: version bump"'
-        sh "git push origin HEAD:main"
+        sh "git push origin"
     } 
 }
 
