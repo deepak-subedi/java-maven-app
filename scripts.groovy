@@ -24,7 +24,7 @@ def buildImage() {
 
 def commitChanges() {
     echo "Update Pom.xml file to git repository..."
-    withCredentials([usernamePassword(credentialsId: "github-credentials", usernameVariable: "USERNAME", passwordVariable: "PASSWORD")]) {       
+    withCredentials([usernamePassword(credentialsId: "github-credentials", usernameVariable: "USERNAME", passwordVariable: "PASSWORD")]) {
         sh 'git config --global user.email "jenkins@gmail.com"'
         sh 'git config --global user.name "jenkins"'
 
