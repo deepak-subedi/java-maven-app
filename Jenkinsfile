@@ -24,13 +24,17 @@ pipeline {
 
         stage("build docker") {
             steps {
-                sh "build docker image"
+                script {
+                    sh "build docker image"
+                }
             }
         }
 
         stage("deploy app") {
             steps {
-                sh "deploy an app $IMAGE_NAME"
+                script {
+                    sh "deploy an app $IMAGE_NAME"
+                }
             }
         }
     }
