@@ -1,11 +1,5 @@
-def gv 
-
 pipeline {
     agent any
-
-    tools {
-        maven "maven-3.8"
-    }
 
     environment {
         IMAGE_NAME = "deepaksubedi311/demo-app"
@@ -13,51 +7,19 @@ pipeline {
 
     stages {
         stage("init") {
-            steps {
-                script {
-                    gv = load "scripts.groovy"
-                }
-            }
+            sh "Initiate github"
         }
 
-        stage("increase version") {
-            steps {
-                script {
-                    gv.incrementVersion()
-                }
-            }
+        stage("build JAR") {
+            sh "build JAR file"
         }
 
-        stage("build Jar") {
-            steps {
-                script {
-                    gv.buildJar()
-                }
-            }
+        stage("build docker") {
+            sh "build docker image"
         }
 
-        stage("build image") {
-            steps {
-                script {
-                    gv.buildImage()
-                }
-            }
-        }
-
-        stage("commit version update") {
-            steps {
-                script {
-                    gv.commitChanges()
-                }
-            }
-        }
-
-        stage('deploy') {
-            steps {
-                script {
-                    gv.deployApp()
-                }
-            }
+        stage("deploy app") {
+            sh "deploy an app $IMAGE_NAME"
         }
     }
 }
