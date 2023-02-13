@@ -14,7 +14,11 @@ pipeline {
 
         stage("build JAR") {
             steps {
-                echo "Build JAR"
+                script {
+                    echo "Build JAR"
+                    sh "mvn clean package"
+                }
+                
             }
         }
 
