@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    tools {
+        maven "maven"
+    }
+
     environment {
         IMAGE_NAME = "deepaksubedi311/demo-app"
     }
