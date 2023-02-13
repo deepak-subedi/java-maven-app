@@ -8,33 +8,25 @@ pipeline {
     stages {
         stage("init") {
             steps {
-                script {
-                    sh "initiate project"
-                }
+                echo "Initialize github"
             }
         }
 
         stage("build JAR") {
             steps {
-                script {
-                    sh "build JAR file"
-                }
+                echo "Build JAR"
             }
         }
 
         stage("build docker") {
             steps {
-                script {
-                    sh "build docker image"
-                }
+                echo "Build docker"
             }
         }
 
         stage("deploy app") {
             steps {
-                script {
-                    sh "deploy an app $IMAGE_NAME"
-                }
+                echo "Deploy app"
             }
         }
     }
