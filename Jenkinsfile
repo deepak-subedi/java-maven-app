@@ -36,7 +36,7 @@ pipeline {
 
         stage("build docker") {
             steps {
-                echo "Build docker"
+                echo "Build docker $IMAGE_VERSION"
             }
         }
 
