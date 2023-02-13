@@ -8,13 +8,17 @@ pipeline {
     stages {
         stage("init") {
             steps {
-                sh "initiate project"
+                script {
+                    sh "initiate project"
+                }
             }
         }
 
         stage("build JAR") {
             steps {
-                sh "build JAR file"
+                script {
+                    sh "build JAR file"
+                }
             }
         }
 
