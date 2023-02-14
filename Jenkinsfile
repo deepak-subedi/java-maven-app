@@ -50,7 +50,7 @@ pipeline {
             steps {
                 script {
                     echo "Increasing app version"
-                    withCredentials([usernamePassword(credentialsId: "github-credential", usernamePassword: "USERNAME", passwordVariable: "PASSWORD")]) {
+                    withCredentials([usernamePassword(credentialsId: "github-credential", usernamePassword: "USERNAME", passwordVariable: "PASS")]) {
                         sh "git config --global user.email 'jenkins@gmail.com'"
                         sh "git config --global user.username 'jenkins'"
 
