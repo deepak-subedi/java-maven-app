@@ -45,5 +45,21 @@ pipeline {
                 echo "Deploy app"
             }
         }
+
+        stage("increment version") {
+            steps {
+                script {
+                    echo "Increasing app version"
+                    withCredentials([usernamePassword(credentialsId: "github-credential", usernamePassword: "USERNAME", passwordVariable: "PASSWORD")]) {
+                        sh "git config --global user.email 'jenkins@gmail.com'"
+                        sh "git config --global user.username 'jenkins'"
+
+                        sh "git status"
+                        sh "git branch"
+                        sh "git config --list"
+                    }
+                }
+            }
+        }
     }
 }
