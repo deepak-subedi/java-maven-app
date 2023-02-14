@@ -52,7 +52,7 @@ pipeline {
                     echo "Increasing app version"
                     withCredentials([usernamePassword(credentialsId: "github-credential", usernameVariable: "USERNAME", passwordVariable: "PASSWORD")]) {
                         sh "git config --global user.email 'jenkins@gmail.com'"
-                        sh "git config --global user.username 'jenkins'"
+                        sh "git config --global user.name 'jenkins'"
 
                         sh "git status"
                         sh "git branch"
