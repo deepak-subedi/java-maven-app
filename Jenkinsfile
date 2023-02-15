@@ -9,6 +9,7 @@ pipeline {
 
     environment {
         IMAGE_NAME = "deepaksubedi311/demo-app"
+        GITHUB_CRED = credentials('github-credential')
     }
 
     stages {
@@ -52,19 +53,17 @@ pipeline {
             steps {
                 script {
                     echo "Increasing app version"
-                    withCredentials([usernamePassword(credentialsId: "github-credential", usernameVariable: "USER", passwordVariable: "PASS")]) {
-                        sh "git config --global user.email 'jenkins@gmail.com'"
-                        sh "git config --global user.name 'jenkins'"
+                    sh "git config --global user.email 'jenkins@gmail.com'"
+                    sh "git config --global user.name 'jenkins'"
 
-                        sh "git status"
-                        sh "git branch"
-                        sh "git config --list"
+                    sh "git status"
+                    sh "git branch"
+                    sh "git config --list"
 
-                        sh("git remote set-url origin https://${USER}:${PASS}@github.com/${USER}/java-maven-app.git")
-                        sh "git add ."
-                        sh "git commit -m 'ci: version bump'"
-                        sh "git push origin HEAD:main"
-                    }
+                    sh('git remote set-url origin https://$GITHUB_CRED_USR:$GITHUB_CRED_PSW@github.com/$GITHUB_CRED_USR/java-maven-app.git')
+                    sh "git add ."
+                    sh "git commit -m 'ci: version bump'"
+                    sh "git push origin HEAD:main"
                 }
             }
         }
