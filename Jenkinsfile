@@ -57,8 +57,8 @@ pipeline {
                     git status
                     git branch
                     git config --list
-                    git remote set-url origin https://$GITHUB_CRED_USR:$GITHUB_CRED_PSW@github.com/$GITHUB_CRED_USR/java-maven-app.git
-                    
+                    git remote set-url origin https://${GITHUB_CRED_USR}:${GITHUB_CRED_PSW}@github.com/${GITHUB_CRED_USR}/java-maven-app.git
+
                     git add .
                     git commit -m 'ci: version bump'
                     git push origin HEAD:main
