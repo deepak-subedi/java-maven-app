@@ -50,19 +50,20 @@ pipeline {
         stage("increment version") {
             steps {
                 echo "Increasing app version"
-                sh """
+                sh '''
                     git config --global user.email 'jenkins@gmail.com'
                     git config --global user.name 'jenkins'
 
                     git status
                     git branch
                     git config --list
-                    git remote set-url origin https://${GITHUB_CRED_USR}:${GITHUB_CRED_PSW}@github.com/${GITHUB_CRED_USR}/java-maven-app.git
+                    git remote set-url origin \
+                    https://$GITHUB_CRED_USR:$GITHUB_CRED_PSW@github.com/$GITHUB_CRED_USR/java-maven-app.git
 
                     git add .
                     git commit -m 'ci: version bump'
                     git push origin HEAD:main
-                """
+                '''
             }
         }
     }
