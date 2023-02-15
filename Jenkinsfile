@@ -13,20 +13,25 @@ pipeline {
     stages {
         stage("increment app version") {
             steps {
-                echo "Increasing the app version..."
-                sh 'mvn build-helper:parse-version versions:set \
-                    -DnewVersion=\\\${parsedVersion.majorVersion}.\\\${parsedVersion.minorVersion}.\\\${parsedVersion.nextIncrementalVersion} \
-                    versions:commit'
-                def matcher = readFile('pom.xml') =~ '<version>(.+)</version>'
-                def version = matcher[0][1]
-                env.IMAGE_VERSION = "$version-$BUILD_NUMBER"
+                script {
+                    echo "Increasing the app version..."
+                    sh 'mvn build-helper:parse-version versions:set \
+                        -DnewVersion=\\\${parsedVersion.majorVersion}.\\\${parsedVersion.minorVersion}.\\\${parsedVersion.nextIncrementalVersion} \
+                        versions:commit'
+                    def matcher = readFile('pom.xml') =~ '<version>(.+)</version>'
+                    def version = matcher[0][1]
+                    env.IMAGE_VERSION = "$version-$BUILD_NUMBER"
+                }
             }
         }
 
         stage("build JAR") {
             steps {
-                echo "Build JAR"
-                sh "mvn clean package"
+                script {
+                    echo "Build JAR"
+                    sh "mvn clean package"
+                }
+                
             }
         }
 
@@ -44,19 +49,21 @@ pipeline {
 
         stage("increment version") {
             steps {
-                echo "Increasing app version"
-                withCredentials([usernamePassword(credentialsId: "github-credential", usernameVariable: "USER", passwordVariable: "PASS")]) {
-                    sh "git config --global user.email 'jenkins@gmail.com'"
-                    sh "git config --global user.name 'jenkins'"
+                script {
+                    echo "Increasing app version"
+                    withCredentials([usernamePassword(credentialsId: "github-credential", usernameVariable: "USER", passwordVariable: "PASS")]) {
+                        sh "git config --global user.email 'jenkins@gmail.com'"
+                        sh "git config --global user.name 'jenkins'"
 
-                    sh "git status"
-                    sh "git branch"
-                    sh "git config --list"
+                        sh "git status"
+                        sh "git branch"
+                        sh "git config --list"
 
-                    sh "git remote set-url origin https://${USER}:${PASS}@github.com/${USER}/java-maven-app.git"
-                    sh "git add ."
-                    sh "git commit -m 'ci: version bump'"
-                    sh "git push origin HEAD:main"
+                        sh "git remote set-url origin https://${USER}:${PASS}@github.com/${USER}/java-maven-app.git"
+                        sh "git add ."
+                        sh "git commit -m 'ci: version bump'"
+                        sh "git push origin HEAD:main"
+                    }
                 }
             }
         }
