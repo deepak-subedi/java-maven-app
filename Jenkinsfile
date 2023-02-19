@@ -56,16 +56,22 @@ pipeline {
         stage("increment version") {
             steps {
                 echo "Increasing app version"
-                withCredentials([usernamePassword(credentialsId: 'github-credential', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
-                    sh "git config --global user.email 'jenkins@gmail.com'"
-                    sh "git config --global user.name 'jenkins'"
-                    sh "git status"
-                    sh "git branch"
-                    sh "git config --list"
-                    sh "git add ."
-                    sh "git commit -m 'ci:version bump'"
-                    sh 'git push --force https://\\${GIT_USERNAME}:\\${GIT_PASSWORD}@github.com/\\${GIT_USERNAME}/java-maven-app.git HEAD:main'
-                }          
+                script {
+                    withCredentials([usernamePassword(credentialsId: 'github-credential', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
+                        def encodedPassword = URLEncoder.encode("$GIT_PASSWORD",'UTF-8')
+                        sh "git config --global user.email 'jenkins@gmail.com'"
+                        sh "git config --global user.name 'jenkins'"
+
+                        sh "git status"
+                        sh "git branch"
+                        sh "git config --list"
+                        
+                        sh "git add ."
+                        sh "git commit -m 'ci:version bump'"
+                        sh 'git push --force https://${GIT_USERNAME}:${encodedPassword}@github.com/${GIT_USERNAME}/java-maven-app.git HEAD:main'
+                    }     
+                }
+                     
             }
         }
     }
