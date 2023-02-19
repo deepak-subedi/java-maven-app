@@ -53,12 +53,26 @@ pipeline {
             }
         }
 
+
         stage("increment version") {
             steps {
                 echo "Increasing app version"
                 script {
-                    withCredentials([usernamePassword(credentialsId: 'github-credential', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
-                        def encodedPassword = URLEncoder.encode("$GIT_PASSWORD",'UTF-8')
+                    // withCredentials([usernamePassword(credentialsId: 'github-credential', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
+                    //     def encodedPassword = URLEncoder.encode("$GIT_PASSWORD",'UTF-8')
+                    //     sh "git config --global user.email 'jenkins@gmail.com'"
+                    //     sh "git config --global user.name 'jenkins'"
+
+                    //     sh "git status"
+                    //     sh "git branch"
+                    //     sh "git config --list"
+
+                    //     sh "git remote set-url origin https://${GIT_USERNAME}:${encodedPassword}@github.com/deepak-subedi/java-maven-app.git"
+                    //     sh "git add ."
+                    //     sh 'git commit -m "ci: version bump"'
+                    //     sh "git push origin HEAD:main"
+                    // }
+                    withCredentials([gitUsernamePassword(credentialsId: 'github-credential', gitToolName: 'Default')]) {
                         sh "git config --global user.email 'jenkins@gmail.com'"
                         sh "git config --global user.name 'jenkins'"
 
@@ -66,11 +80,11 @@ pipeline {
                         sh "git branch"
                         sh "git config --list"
 
-                        sh "git remote set-url origin https://${GIT_USERNAME}:${encodedPassword}@github.com/deepak-subedi/java-maven-app.git"
+                        sh "git remote set-url origin https://github.com/deepak-subedi/java-maven-app.git"
                         sh "git add ."
                         sh 'git commit -m "ci: version bump"'
                         sh "git push origin HEAD:main"
-                    }     
+                    }  
                 }
                      
             }
