@@ -5,3 +5,10 @@ services:
     image: deepaksubedi311/demo-app:1.1.9-50
     ports:
       - 8080:8080
+  
+  postgres:
+    image: postgres:15.2-alpine3.17
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_PASSWORD:password

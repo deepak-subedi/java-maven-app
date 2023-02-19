@@ -56,9 +56,12 @@ pipeline {
         stage("deploy app") {
             steps {
                 script {
-                    def dockerCmd = "docker run -p 8080:8080 -d $IMAGE_NAME:$IMAGE_VERSION"
+                    echo "deploying docker image to EC2"
+                    // def dockerCmd = "docker run -p 8080:8080 -d $IMAGE_NAME:$IMAGE_VERSION"
+                    def dockerComposeCmd = "docker compose -f docker-compose.yaml up --detach"
                     sshagent(['linode-credential']) {
-                        sh "ssh -o StrictHostKeyChecking=no root@172.105.218.125 ${dockerCmd}"
+                        sh "scp docker-compose.yaml root@172.105.218.125:/root"
+                        sh "ssh -o StrictHostKeyChecking=no root@172.105.218.125 ${dockerComposeCmd}"
                     }
                 }
             }
