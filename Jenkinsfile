@@ -9,13 +9,14 @@ pipeline {
         IMAGE_NAME = "deepaksubedi311/demo-app"
     }
 
-
     stages {
-        stage("GIT Checkout") {
-            steps {
-                git branch: 'main', credentialsId: 'github-credential', url: 'https://github.com/deepak-subedi/java-maven-app.git'
-            }
-        }
+        // stage("GIT Checkout") {
+        //     steps {
+        //         git branch: 'main', 
+        //         credentialsId: 'github-credential', 
+        //         url: 'https://github.com/deepak-subedi/java-maven-app.git'
+        //     }
+        // }
 
         stage("increment app version") {
             steps {
@@ -41,7 +42,7 @@ pipeline {
             }
         }
 
-        stage("build docker") {
+        stage("build & push docker images") {
             steps {
                 echo "Building the docker image..."
                 withCredentials([usernamePassword(credentialsId: "docker-hub-credential", usernameVariable: "USERNAME", passwordVariable: "PASSWORD")]) {
@@ -54,7 +55,12 @@ pipeline {
 
         stage("deploy app") {
             steps {
-                echo "Deploy app"
+                script {
+                    def dockerCmd = "docker run -p 3080:3080 -d $IMAGE_NAME:$IMAGE_VERSION"
+                    sshagent(['linode-credential']) {
+                        sh "ssh -o StrictHostKeyChecking=no root@172.105.218.125 ${dockerCmd}"
+                    }
+                }
             }
         }
     }
