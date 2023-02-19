@@ -72,7 +72,7 @@ pipeline {
                     //     sh 'git commit -m "ci: version bump"'
                     //     sh "git push origin HEAD:main"
                     // }
-                    withCredentials([gitUsernamePassword(credentialsId: 'github-credential-ssh', gitToolName: 'Default')]) {
+                    withCredentials([sshUserPrivateKey(credentialsId: "github-credential-ssh", keyFileVariable: 'key')]) {
                         sh "git config --global user.email 'jenkins@gmail.com'"
                         sh "git config --global user.name 'jenkins'"
 
