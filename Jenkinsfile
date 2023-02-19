@@ -7,10 +7,16 @@ pipeline {
 
     environment {
         IMAGE_NAME = "deepaksubedi311/demo-app"
-        GITHUB_CRED = credentials('github-credential')
     }
 
+
     stages {
+        stage("GIT Checkout") {
+            steps {
+                git branch: 'main', credentialsId: 'github-credential', url: 'https://github.com/deepak-subedi/java-maven-app.git'
+            }
+        }
+
         stage("increment app version") {
             steps {
                 script {
@@ -49,19 +55,17 @@ pipeline {
 
         stage("increment version") {
             steps {
-                echo "Increasing app version"
-                sh """
-                    git config --global user.email 'jenkins@gmail.com'
-                    git config --global user.name 'jenkins'
-
-                    git status
-                    git branch
-                    git config --list
-
-                    git add .
-                    git commit -m 'ci: version bump'
-                    git push --force https://${GITHUB_CRED_USR}:${GITHUB_CRED_PSW}@github.com/${GITHUB_CRED_USR}/java-maven-app.git HEAD:main
-                """
+                withCredentials([usernamePassword(credentialsId: 'github-credential', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
+                    echo "Increasing app version"
+                    sh "git config --global user.email 'jenkins@gmail.com'"
+                    sh "git config --global user.name 'jenkins'"
+                    sh "git status"
+                    sh "git branch"
+                    sh "git config --list"
+                    sh "git add ."
+                    sh "git commit -m 'ci:version bump'"
+                    sh 'git push --force https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/${GIT_USERNAME}/java-maven-app.git HEAD:main'
+                }          
             }
         }
     }
