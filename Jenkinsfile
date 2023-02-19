@@ -56,7 +56,7 @@ pipeline {
         stage("deploy app") {
             steps {
                 script {
-                    def dockerCmd = "docker run -p 3080:3080 -d $IMAGE_NAME:$IMAGE_VERSION"
+                    def dockerCmd = "docker run -p 8080:8080 -d $IMAGE_NAME:$IMAGE_VERSION"
                     sshagent(['linode-credential']) {
                         sh "ssh -o StrictHostKeyChecking=no root@172.105.218.125 ${dockerCmd}"
                     }

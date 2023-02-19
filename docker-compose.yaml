@@ -1,0 +1,7 @@
+version: "3.9"
+
+services:
+  java-maven-app:
+    image: deepaksubedi311/demo-app:1.1.9-50
+    ports:
+      - 8080:8080
