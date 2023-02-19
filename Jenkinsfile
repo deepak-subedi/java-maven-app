@@ -55,8 +55,9 @@ pipeline {
 
         stage("increment version") {
             steps {
+                echo "Increasing app version"
                 withCredentials([usernamePassword(credentialsId: 'github-credential', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
-                    echo "Increasing app version"
+                    sh "git config --global --unset https.proxy"
                     sh "git config --global user.email 'jenkins@gmail.com'"
                     sh "git config --global user.name 'jenkins'"
                     sh "git status"
