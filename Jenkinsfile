@@ -58,13 +58,11 @@ pipeline {
                 script {
                     echo "deploying docker image to EC2"
                     // def dockerCmd = "docker run -p 8080:8080 -d $IMAGE_NAME:$IMAGE_VERSION"
-                    def dockerComposeCmd = "docker compose -f docker-compose.yaml up --detach"
+                    def shellCmd = "bash ./server-comds.sh"
                     sshagent(['linode-credential']) {
-                        sh "docker stop $(docker ps -aq)"
-                        sh "docker rm $(docker ps -aq)"
-                        sh "docker rmi $(docker images -q)"
+                        sh "scp server-comds.sh root@172.105.218.125:/root"
                         sh "scp docker-compose.yaml root@172.105.218.125:/root"
-                        sh "ssh -o StrictHostKeyChecking=no root@172.105.218.125 ${dockerComposeCmd}"
+                        sh "ssh -o StrictHostKeyChecking=no root@172.105.218.125 ${shellCmd}"
                     }
                 }
             }
