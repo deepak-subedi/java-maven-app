@@ -65,7 +65,7 @@ pipeline {
                     sh "git config --list"
                     sh "git add ."
                     sh "git commit -m 'ci:version bump'"
-                    sh 'git push --force https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/${GIT_USERNAME}/java-maven-app.git HEAD:main'
+                    sh 'git push --force https://\\\${GIT_USERNAME}:\\\${GIT_PASSWORD}@github.com/\\\${GIT_USERNAME}/java-maven-app.git HEAD:main'
                 }          
             }
         }
