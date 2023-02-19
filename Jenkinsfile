@@ -10,14 +10,6 @@ pipeline {
     }
 
     stages {
-        // stage("GIT Checkout") {
-        //     steps {
-        //         git branch: 'main', 
-        //         credentialsId: 'github-credential', 
-        //         url: 'https://github.com/deepak-subedi/java-maven-app.git'
-        //     }
-        // }
-
         stage("increment app version") {
             steps {
                 script {
@@ -53,10 +45,10 @@ pipeline {
             }
         }
 
-        stage("deploy app") {
+        stage("deploy app to Linode server") {
             steps {
                 script {
-                    echo "deploying docker image to EC2"
+                    echo "deploying docker image to Linode server"
                     // def dockerCmd = "docker run -p 8080:8080 -d $IMAGE_NAME:$IMAGE_VERSION"
                     def shellCmd = "bash ./server-cmds.sh ${IMAGE_NAME} ${IMAGE_VERSION}"
                     def linodeInstance = "root@172.105.218.125"
