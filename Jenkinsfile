@@ -43,50 +43,18 @@ pipeline {
 
         stage("build docker") {
             steps {
-                echo "Build docker $IMAGE_VERSION"
+                echo "Building the docker image..."
+                withCredentials([usernamePassword(credentialsId: "docker-hub-credential", usernameVariable: "USERNAME", passwordVariable: "PASSWORD")]) {
+                    sh "docker build -t $IMAGE_NAME:$IMAGE_VERSION ."
+                    sh "echo $PASSWORD | docker login -u $USERNAME --password-stdin"
+                    sh "docker push $IMAGE_NAME:$IMAGE_VERSION"
+                }
             }
         }
 
         stage("deploy app") {
             steps {
                 echo "Deploy app"
-            }
-        }
-
-
-        stage("increment version") {
-            steps {
-                echo "Increasing app version"
-                script {
-                    // withCredentials([usernamePassword(credentialsId: 'github-credential', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
-                    //     def encodedPassword = URLEncoder.encode("$GIT_PASSWORD",'UTF-8')
-                    //     sh "git config --global user.email 'jenkins@gmail.com'"
-                    //     sh "git config --global user.name 'jenkins'"
-
-                    //     sh "git status"
-                    //     sh "git branch"
-                    //     sh "git config --list"
-
-                    //     sh "git remote set-url origin https://${GIT_USERNAME}:${encodedPassword}@github.com/deepak-subedi/java-maven-app.git"
-                    //     sh "git add ."
-                    //     sh 'git commit -m "ci: version bump"'
-                    //     sh "git push origin HEAD:main"
-                    // }
-                    withCredentials([sshUserPrivateKey(credentialsId: "github-credential-ssh", keyFileVariable: 'key')]) {
-                        sh "git config --global user.email 'jenkins@gmail.com'"
-                        sh "git config --global user.name 'jenkins'"
-
-                        sh "git status"
-                        sh "git branch"
-                        sh "git config --list"
-
-                        sh "git remote set-url origin https://github.com/deepak-subedi/java-maven-app.git"
-                        sh "git add ."
-                        sh 'git commit -m "ci: version bump"'
-                        sh "git push origin HEAD:main"
-                    }  
-                }
-                     
             }
         }
     }
