@@ -9,4 +9,4 @@ export DOCKER_PWD=$4
 # docker rmi $(docker images -q)
 
 echo $DOCKER_PWD | docker login -u $DOCKER_USER --password-stdin
-docker compose -f docker-compose.yaml up --detach
+docker-compose -f docker-compose.yaml up --detach
