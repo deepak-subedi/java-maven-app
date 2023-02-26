@@ -18,6 +18,10 @@ variable "my_ip" {
   default = "60.103.57.167/32"
 }
 
+variable "ec2_server_ip" {
+  default = "54.238.98.133"
+}
+
 variable "instance_type" {
   default = "t2.micro"
 }
