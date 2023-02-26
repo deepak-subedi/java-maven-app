@@ -73,14 +73,14 @@ pipeline {
 
                     echo "deploying docker image to ec2 server"
                     echo "${EC2_PUBLIC_IP}"
-                    
+
                     // def dockerCmd = "docker run -p 8080:8080 -d $IMAGE_NAME:$IMAGE_VERSION"
                     def shellCmd = "bash ./server-cmds.sh ${IMAGE_NAME} ${IMAGE_VERSION}"
-                    def linodeInstance = "root@${EC2_PUBLIC_IP}"
+                    def linodeInstance = "ec2-user@${EC2_PUBLIC_IP}"
 
                     sshagent(['linode-credential']) {
-                        sh "scp -o StrictHostKeyChecking=no server-cmds.sh ${linodeInstance}:/root"
-                        sh "scp -o StrictHostKeyChecking=no docker-compose.yaml ${linodeInstance}:/root"
+                        sh "scp -o StrictHostKeyChecking=no server-cmds.sh ${linodeInstance}:/home/ec2-user"
+                        sh "scp -o StrictHostKeyChecking=no docker-compose.yaml ${linodeInstance}:/home/ec2-user"
                         sh "ssh -o StrictHostKeyChecking=no ${linodeInstance} ${shellCmd}"
                     }
                 }
