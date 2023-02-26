@@ -15,11 +15,11 @@ variable "env_prefix" {
 }
 
 variable "my_ip" {
-  default = "126.75.103.133/32"
+  default = "xxxxx"
 }
 
 variable "ec2_server_ip" {
-  default = "172.17.0.2/32"
+  default = "xxxxx"
 }
 
 variable "instance_type" {
