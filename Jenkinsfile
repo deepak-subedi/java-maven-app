@@ -66,6 +66,10 @@ pipeline {
         }
 
         stage("deploy app to ec2 server") {
+            environment {
+                DOCKER_CREDS: credentials("docker-hub-credential") 
+            }
+
             steps {
                 script {
                     echo "waiting for EC2 server to initialize"
@@ -75,7 +79,7 @@ pipeline {
                     echo "${EC2_PUBLIC_IP}"
 
                     // def dockerCmd = "docker run -p 8080:8080 -d $IMAGE_NAME:$IMAGE_VERSION"
-                    def shellCmd = "bash ./server-cmds.sh ${IMAGE_NAME} ${IMAGE_VERSION}"
+                    def shellCmd = "bash ./server-cmds.sh ${IMAGE_NAME} ${IMAGE_VERSION} ${DOCKER_CREDS_USR} ${DOCKER_CREDS_PSW}"
                     def linodeInstance = "ec2-user@${EC2_PUBLIC_IP}"
 
                     sshagent(['linode-credential']) {
