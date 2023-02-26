@@ -67,7 +67,7 @@ pipeline {
 
         stage("deploy app to ec2 server") {
             environment {
-                DOCKER_CREDS: credentials("docker-hub-credential") 
+                DOCKER_CREDS = credentials("docker-hub-credential") 
             }
 
             steps {
