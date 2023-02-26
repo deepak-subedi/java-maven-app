@@ -7,8 +7,8 @@ terraform {
   }
 
   backend "s3" {
-    bucket = "myapp-terraform-state-bucket"
-    key    = "myapp/state.tfstate"
+    bucket = "java-tf-state-bucket"
+    key    = "java/state.tfstate"
     region = "ap-northeast-1"
   }
 }
