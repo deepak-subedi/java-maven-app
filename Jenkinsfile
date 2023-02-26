@@ -30,7 +30,6 @@ pipeline {
                     echo "Build JAR"
                     sh "mvn clean package"
                 }
-                
             }
         }
 
@@ -45,41 +44,47 @@ pipeline {
             }
         }
 
-        stage("deploy app to Linode server") {
+        stage("provision server") {
+            environment {
+                AWS_ACCESS_KEY_ID = credentials("aws_access_key_id")
+                AWS_SECRET_ACCESS_KEY = credentials("aws_secret_access_key")
+                TF_VAR_env_prefix = "test"
+            }
+
             steps {
                 script {
-                    echo "deploying docker image to Linode server"
-                    // def dockerCmd = "docker run -p 8080:8080 -d $IMAGE_NAME:$IMAGE_VERSION"
-                    def shellCmd = "bash ./server-cmds.sh ${IMAGE_NAME} ${IMAGE_VERSION}"
-                    def linodeInstance = "root@172.105.218.125"
-                    sshagent(['linode-credential']) {
-                        sh "scp server-cmds.sh ${linodeInstance}:/root"
-                        sh "scp docker-compose.yaml ${linodeInstance}:/root"
-                        sh "ssh -o StrictHostKeyChecking=no ${linodeInstance} ${shellCmd}"
+                    dir("terraform") {
+                        sh "terraform init"
+                        sh "terraform apply --auto-approve"
+                        env.EC2_PUBLIC_IP = sh(
+                            script: "terraform output ec2_public_ip"
+                            returnStdout: true
+                        ).trim()
                     }
                 }
             }
         }
 
-        // stage("commit github source code") {
-        //     steps {
-        //         script {
-        //             echo "Update Pom.xml file to git repository..."
-        //             withCredentials([usernamePassword(credentialsId: "github-credentials", usernameVariable: "USERNAME", passwordVariable: "PASSWORD")]) {
-        //                 sh 'git config --global user.email "jenkins@gmail.com"'
-        //                 sh 'git config --global user.name "jenkins"'
+        stage("deploy app to ec2 server") {
+            steps {
+                script {
+                    echo "waiting for EC2 server to initialize"
+                    sleep(time: 90, unit: "SECONDS")
 
-        //                 sh "git status"
-        //                 sh "git branch"
-        //                 sh "git config --list"
+                    echo "deploying docker image to ec2 server"
+                    echo "${EC2_PUBLIC_IP}"
+                    
+                    // def dockerCmd = "docker run -p 8080:8080 -d $IMAGE_NAME:$IMAGE_VERSION"
+                    def shellCmd = "bash ./server-cmds.sh ${IMAGE_NAME} ${IMAGE_VERSION}"
+                    def linodeInstance = "root@${EC2_PUBLIC_IP}"
 
-        //                 sh "git remote set-url origin https://${USERNAME}:${PASSWORD}@github.com/${USERNAME}/java-maven-app.git"
-        //                 sh "git add ."
-        //                 sh 'git commit -m "ci: version bump"'
-        //                 sh "git push origin HEAD:main"
-        //             }
-        //         }
-        //     }
-        // }
+                    sshagent(['linode-credential']) {
+                        sh "scp -o StrictHostKeyChecking=no server-cmds.sh ${linodeInstance}:/root"
+                        sh "scp -o StrictHostKeyChecking=no docker-compose.yaml ${linodeInstance}:/root"
+                        sh "ssh -o StrictHostKeyChecking=no ${linodeInstance} ${shellCmd}"
+                    }
+                }
+            }
+        }
     }
 }
