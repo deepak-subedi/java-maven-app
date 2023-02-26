@@ -19,7 +19,7 @@ variable "my_ip" {
 }
 
 variable "ec2_server_ip" {
-  default = "54.238.98.133/32"
+  default = "172.17.0.2/32"
 }
 
 variable "instance_type" {
