@@ -80,12 +80,12 @@ pipeline {
 
                     // def dockerCmd = "docker run -p 8080:8080 -d $IMAGE_NAME:$IMAGE_VERSION"
                     def shellCmd = "bash ./server-cmds.sh ${IMAGE_NAME} ${IMAGE_VERSION} ${DOCKER_CREDS_USR} ${DOCKER_CREDS_PSW}"
-                    def linodeInstance = "ec2-user@${EC2_PUBLIC_IP}"
+                    def ec2Instance = "ec2-user@${EC2_PUBLIC_IP}"
 
-                    sshagent(['linode-credential']) {
-                        sh "scp -o StrictHostKeyChecking=no server-cmds.sh ${linodeInstance}:/home/ec2-user"
-                        sh "scp -o StrictHostKeyChecking=no docker-compose.yaml ${linodeInstance}:/home/ec2-user"
-                        sh "ssh -o StrictHostKeyChecking=no ${linodeInstance} ${shellCmd}"
+                    sshagent(['terraform-ec2-ssh-key']) {
+                        sh "scp -o StrictHostKeyChecking=no server-cmds.sh ${ec2Instance}:/home/ec2-user"
+                        sh "scp -o StrictHostKeyChecking=no docker-compose.yaml ${ec2Instance}:/home/ec2-user"
+                        sh "ssh -o StrictHostKeyChecking=no ${ec2Instance} ${shellCmd}"
                     }
                 }
             }
