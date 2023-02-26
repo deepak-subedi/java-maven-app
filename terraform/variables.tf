@@ -15,7 +15,7 @@ variable "env_prefix" {
 }
 
 variable "my_ip" {
-  default = "60.103.57.167/32"
+  default = "126.75.103.133/32"
 }
 
 variable "ec2_server_ip" {
