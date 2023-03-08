@@ -91,4 +91,11 @@ pipeline {
             }
         }
     }
+
+    post {
+        always {
+            echo "Deleting local images..."
+            sh "docker image purne -af"
+        }
+    }
 }
